@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,9 +14,14 @@ import java.util.List;
 @AllArgsConstructor
 public class Subject {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private  Long subjectId;
-    private String subjectName;
-    @ManyToMany(mappedBy="enrolledSubjects")
-    private List<Students> registerStudents;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
+    private String subjectId;
+
+    private String name;
+
+    @ManyToMany(mappedBy = "enrolledSubjects")
+    private List<Students> registeredStudents = new ArrayList<>();
 }

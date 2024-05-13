@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -13,13 +14,21 @@ import java.util.List;
 @Entity
 public class Students {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String registrationId;
+
     private String name;
 
     @ManyToMany
-    private List<Exam>regsterExam;
-    @ManyToMany
-    private  List<Subject> enrolledSubjects;
+    @JoinTable(name = "student_subject",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id"))
+    private List<Subject> enrolledSubjects = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "enrolledStudents")
+    private List<Exam> registeredExams = new ArrayList<>();
+
 }

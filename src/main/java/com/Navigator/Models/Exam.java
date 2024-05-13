@@ -1,12 +1,12 @@
 package com.Navigator.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -15,6 +15,18 @@ import lombok.NoArgsConstructor;
 public class Exam {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long examId;
+    private Long id;
+
+    @Column(unique = true)
+    private String examId;
+
+    @ManyToOne
+    private Subject subject;
+
+    @ManyToMany
+    @JoinTable(name = "exam_student",
+            joinColumns = @JoinColumn(name = "exam_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id"))
+    private List<Students> enrolledStudents = new ArrayList<>();
 
 }
