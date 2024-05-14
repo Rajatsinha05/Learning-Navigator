@@ -1,5 +1,6 @@
 package com.Navigator.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +24,6 @@ public class Subject {
     private String name;
 
     @ManyToMany(mappedBy = "enrolledSubjects")
+    @JsonBackReference
     private List<Students> registeredStudents = new ArrayList<>();
 }

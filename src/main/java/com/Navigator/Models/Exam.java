@@ -1,5 +1,6 @@
 package com.Navigator.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class Exam {
     @JoinTable(name = "exam_student",
             joinColumns = @JoinColumn(name = "exam_id"),
             inverseJoinColumns = @JoinColumn(name = "student_id"))
+    @JsonBackReference
     private List<Students> enrolledStudents = new ArrayList<>();
 
 }

@@ -9,5 +9,5 @@ public interface ISubject {
     Subject getSubjectById(Long id);
     Subject deleteSubjectById(Long id);
     List<Subject> getSubjectList();
-    Subject enrollSubjectFormStudent(Long studentId, Long subjectId);
+    Subject enrollSubjectForStudent(Long studentId, Long subjectId);
 }

@@ -1,5 +1,6 @@
 package com.Navigator.Models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,9 +27,11 @@ public class Students {
     @JoinTable(name = "student_subject",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id"))
+    @JsonManagedReference
     private List<Subject> enrolledSubjects = new ArrayList<>();
 
     @ManyToMany(mappedBy = "enrolledStudents")
+    @JsonManagedReference
     private List<Exam> registeredExams = new ArrayList<>();
 
 }

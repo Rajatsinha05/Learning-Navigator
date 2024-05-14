@@ -6,13 +6,15 @@ import com.Navigator.Models.Subject;
 import com.Navigator.Repository.StudentRepository;
 import com.Navigator.Repository.SubjectRepository;
 import com.Navigator.Service.ISubject;
-import java.util.Collections;
+
 import java.util.List;
+
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SubjectImpl implements ISubject {
+public class SubjectServiceImpl implements ISubject {
 
   @Autowired
   private SubjectRepository subjectRepository;
@@ -63,18 +65,21 @@ public class SubjectImpl implements ISubject {
   }
 
 
-  public Subject enrollSubjectFormStudent(Long StudentId,Long SubjectId){
+  @Override
+  @Transactional
+  public Subject enrollSubjectForStudent(Long studentId, Long subjectId) {
     try {
-      Students student= studentRepository.findById(StudentId).orElseThrow(() ->
-              new NotFoundException("Student not found with id: " +StudentId)
+      Students student = studentRepository.findById(studentId)
+              .orElseThrow(() -> new NotFoundException("Student not found with id: " + studentId));
+      Subject subject = subjectRepository.findById(subjectId)
+              .orElseThrow(() -> new NotFoundException("Subject not found with id: " + subjectId));
 
-      );
-
-      Subject subject=subjectRepository.findById(SubjectId).orElseThrow(()-> new NotFoundException("Subject not found with id: " + SubjectId));
+      student.getEnrolledSubjects().add(subject);
       subject.getRegisteredStudents().add(student);
-      return  subjectRepository.save(subject);
-    }
-    catch ( Exception e){
+
+      studentRepository.save(student);
+      return subjectRepository.save(subject);
+    } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }
   }
