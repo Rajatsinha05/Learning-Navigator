@@ -9,18 +9,30 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<?> handleNotFoundException(NotFoundException ex, WebRequest request) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<?> handleNotFoundException(
+    NotFoundException ex,
+    WebRequest request
+  ) {
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+  }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<?> handleBadRequestException(BadRequestException ex, WebRequest request) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<?> handleBadRequestException(
+    BadRequestException ex,
+    WebRequest request
+  ) {
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+  }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<?> handleGlobalException(
+    Exception ex,
+    WebRequest request
+  ) {
+    return new ResponseEntity<>(
+      ex.getMessage(),
+      HttpStatus.INTERNAL_SERVER_ERROR
+    );
+  }
 }
