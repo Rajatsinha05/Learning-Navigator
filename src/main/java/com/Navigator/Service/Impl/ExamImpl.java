@@ -5,7 +5,9 @@ import com.Navigator.Repository.ExamRepository;
 import com.Navigator.Service.IExam;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ExamImpl implements IExam {
 
   @Autowired
