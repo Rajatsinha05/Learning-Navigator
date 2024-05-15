@@ -16,14 +16,10 @@ import java.util.List;
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true)
-    private String subjectId;
-
+    private Long subjectId;
     private String name;
 
-    @ManyToMany(mappedBy = "enrolledSubjects")
-    @JsonBackReference
-    private List<Students> registeredStudents = new ArrayList<>();
+    @ManyToMany(mappedBy = "subjects")
+
+    private List<Students> students= new ArrayList<>();
 }

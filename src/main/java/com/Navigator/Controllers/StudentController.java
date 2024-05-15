@@ -15,7 +15,7 @@ public class StudentController {
   @Autowired
   private StudentServiceImpl studentService;
 
-  @PostMapping
+  @PostMapping( consumes = "application/json", produces = "application/json")
   public ResponseEntity<?> createStudentHandler(
     @Valid @RequestBody Students student
   ) {
@@ -29,7 +29,7 @@ public class StudentController {
     }
   }
 
-  @GetMapping
+  @GetMapping(produces = "application/json")
   public ResponseEntity<?> getStudentListHandler() {
     try {
       return new ResponseEntity<>(
@@ -50,7 +50,7 @@ public class StudentController {
     }
   }
 
-  @PutMapping("/{id}")
+  @PutMapping(value = "/{id}",consumes = "application/json", produces = "application/json")
   public ResponseEntity<?> updateStudentHandler(
     @PathVariable("id") Long id,
     @RequestBody Students student
@@ -77,7 +77,7 @@ public class StudentController {
     }
   }
 
-  @PostMapping("/{studentId}/enroll/{subjectId}")
+  @PostMapping( value = "/{studentId}/enroll/{subjectId}",consumes = "application/json", produces = "application/json")
   public ResponseEntity<?> enrollStudentToSubjectHandler(
     @PathVariable("studentId") Long studentId,
     @PathVariable("subjectId") Long subjectId
@@ -90,7 +90,7 @@ public class StudentController {
     }
   }
 
-  @PostMapping("/{studentId}/register/{examId}")
+  @PostMapping(value = "/{studentId}/register/{examId}",consumes = "application/json", produces = "application/json")
   public ResponseEntity<?> registerStudentForExamHandler(
     @PathVariable("studentId") Long studentId,
     @PathVariable("examId") Long examId

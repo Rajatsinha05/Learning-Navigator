@@ -49,13 +49,14 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     @Override
-    public Students updateStudent(Long id, Students students) {
-        Students stu = studentRepository.findById(id)
+    public Students updateStudent(Long id, Students studentDetails) {
+        Students student = studentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Student not found with id: " + id));
-        stu.setName(students.getName());
-        stu.setEnrolledSubjects(students.getEnrolledSubjects());
-        stu.setRegistrationId(students.getRegistrationId());
-        return studentRepository.save(stu);
+        student.setName(studentDetails.getName());
+        student.setSubjects(studentDetails.getSubjects());
+        student.setExams(studentDetails.getExams());
+
+        return studentRepository.save(student);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class StudentServiceImpl implements IStudentService {
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new NotFoundException("Subject not found with id: " + subjectId));
 
-        student.getEnrolledSubjects().add(subject);
+        student.getSubjects().add(subject);
         studentRepository.save(student);
     }
 
@@ -78,7 +79,7 @@ public class StudentServiceImpl implements IStudentService {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new NotFoundException("Exam not found with id: " + examId));
 
-        student.getRegisteredExams().add(exam);
+        student.getExams().add(exam);
         studentRepository.save(student);
     }
 }

@@ -10,12 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/subject")
+@RequestMapping(value = "/subject",consumes = "application/json", produces = "application/json")
 public class SubjectController {
     @Autowired
     private SubjectServiceImpl subjectService;
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createHandler(@Valid @RequestBody Subject subject){
         try{
             return new ResponseEntity<>(subjectService.createSubject(subject), HttpStatus.CREATED);
@@ -46,7 +46,7 @@ public class SubjectController {
     }
 
 
-    @PostMapping("/{subjectId}/enroll/{studentId}")
+    @PostMapping(value = "/{subjectId}/enroll/{studentId}",consumes = "application/json", produces = "application/json")
     public  ResponseEntity<?> enrollHandler(@PathVariable("subjectId") Long subjectId, @PathVariable("studentId") Long studentId){
 
         try{

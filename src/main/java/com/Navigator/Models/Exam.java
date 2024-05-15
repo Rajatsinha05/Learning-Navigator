@@ -14,21 +14,32 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class Exam {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true)
-    private String examId;
-
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
+//
+//    @Column(unique = true)
+//    private String examId;
+//
+//    @ManyToOne
+//    private Subject subject;
+//
+//    @ManyToMany
+//    @JoinTable(name = "exam_student",
+//            joinColumns = @JoinColumn(name = "exam_id"),
+//            inverseJoinColumns = @JoinColumn(name = "student_id"))
+////    @JsonBackReference
+//    private List<Students> enrolledStudents = new ArrayList<>();
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long examId;
+    private String name;
     @ManyToOne
     private Subject subject;
 
-    @ManyToMany
-    @JoinTable(name = "exam_student",
-            joinColumns = @JoinColumn(name = "exam_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id"))
+    @ManyToMany(mappedBy = "exams")
     @JsonBackReference
-    private List<Students> enrolledStudents = new ArrayList<>();
+    private List<Students> students= new ArrayList<>();
 
 }
+

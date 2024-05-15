@@ -16,11 +16,7 @@ import java.util.List;
 public class Students {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true)
-    private String registrationId;
-
+    private Long registrationId;
     private String name;
 
     @ManyToMany
@@ -28,10 +24,15 @@ public class Students {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id"))
     @JsonManagedReference
-    private List<Subject> enrolledSubjects = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "enrolledStudents")
+    private List<Subject> subjects=new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "student_exam",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "exam_id"))
     @JsonManagedReference
-    private List<Exam> registeredExams = new ArrayList<>();
+
+    private List<Exam> exams= new ArrayList<>();
 
 }

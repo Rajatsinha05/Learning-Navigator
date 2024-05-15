@@ -63,10 +63,22 @@ public class SubjectServiceImpl implements ISubject {
       throw new RuntimeException(e.getMessage());
     }
   }
+  public Subject updateSubject(Long id, Subject subjectDetails) {
+    try {
+      Subject subject = subjectRepository.findById(id)
+              .orElseThrow(() -> new NotFoundException("Subject not found with id: " + id));
+
+      subject.setName(subjectDetails.getName());
+
+      return subjectRepository.save(subject);
+    } catch (NotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
 
   @Override
-  @Transactional
+//  @Transactional
   public Subject enrollSubjectForStudent(Long studentId, Long subjectId) {
     try {
       Students student = studentRepository.findById(studentId)
@@ -74,8 +86,8 @@ public class SubjectServiceImpl implements ISubject {
       Subject subject = subjectRepository.findById(subjectId)
               .orElseThrow(() -> new NotFoundException("Subject not found with id: " + subjectId));
 
-      student.getEnrolledSubjects().add(subject);
-      subject.getRegisteredStudents().add(student);
+      student.getSubjects().add(subject);
+      subject.getStudents().add(student);
 
       studentRepository.save(student);
       return subjectRepository.save(subject);
