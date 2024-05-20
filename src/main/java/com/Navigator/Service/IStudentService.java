@@ -4,7 +4,7 @@ import com.Navigator.Models.Student;
 
 import java.util.List;
 
-public Longerface IStudentService {
+public interface IStudentService {
     List<Student> getAllStudents();
     Student getStudentByRegistrationId(Long registrationId);
     Student createStudent(Student student);

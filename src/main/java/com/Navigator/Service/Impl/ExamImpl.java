@@ -16,12 +16,11 @@ import org.springframework.stereotype.Service;
 @Transactional
 @Service
 public class ExamImpl implements IExam {
-
   @Autowired
   private ExamRepository examRepository;
 
   @Autowired
-  private StudentRepository studentService;
+  private StudentServiceImpl studentService;
 
   @Autowired
   private StudentRepository studentRepository;
@@ -36,7 +35,7 @@ public class ExamImpl implements IExam {
     try{
       return examRepository.findByExamId(examId);
     }catch(NotFoundException e){
-      System.out.prLongln("Exam not Found with ID: " + examId);
+      System.out.println("Exam not Found with ID: " + examId);
     }
     return null;
   }

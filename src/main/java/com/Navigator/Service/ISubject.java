@@ -5,9 +5,10 @@ import com.Navigator.Models.Subject;
 import java.util.List;
 
 public interface ISubject {
-     Subject createSubject(Subject subject);
-    Subject getSubjectById(Long id);
-    Subject deleteSubjectById(Long id);
-    List<Subject> getSubjectList();
-    Subject enrollSubjectForStudent(Long studentId, Long subjectId);
+    List<Subject> getAllSubjects();
+    Subject getSubjectById(Long subjectId);
+    Subject createSubject(Subject subject);
+    void deleteSubject(Long subjectId);
+
+
 }

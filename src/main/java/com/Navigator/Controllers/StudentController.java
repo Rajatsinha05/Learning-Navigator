@@ -1,5 +1,6 @@
 package com.Navigator.Controllers;
 
+import com.Navigator.Exceptions.NotFoundException;
 import com.Navigator.Models.Student;
 import com.Navigator.Service.Impl.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,52 +17,61 @@ public class StudentController {
   @Autowired
   private StudentServiceImpl studentService;
 
-  @PostMapping(consumes = "application/json", produces = "application/json")
-  public ResponseEntity<Student> createStudentHandler(@RequestBody Student student) {
+  @GetMapping
+  public ResponseEntity<List<Student>> getAllStudents(){
+    List<Student> students = studentService.getAllStudents();
+    return new ResponseEntity<>(students,HttpStatus.OK);
+  }
+
+  @GetMapping("/{registrationId}")
+  public ResponseEntity<Student> getStudentByRegistrationId(@PathVariable Long registrationId){
+    Student student = studentService.getStudentByRegistrationId(registrationId);
+    if(student == null){
+      return ResponseEntity.notFound().build();
+    }
+    return new  ResponseEntity<>(student,HttpStatus.OK);
+  }
+
+  @PostMapping
+  public ResponseEntity<Student> createStudent(@RequestBody Student student){
     Student createdStudent = studentService.createStudent(student);
-    return new ResponseEntity<>(createdStudent, HttpStatus.CREATED);
+    return new ResponseEntity<>(createdStudent,HttpStatus.CREATED);
   }
 
-  @GetMapping(produces = "application/json")
-  public ResponseEntity<List<Student>> getStudentListHandler() {
-    List<Student> students = studentService.getStudentList();
-    return new ResponseEntity<>(students, HttpStatus.OK);
+  @PutMapping("/{registrationId}")
+  public ResponseEntity<Student> updateStudent(@PathVariable Long registrationId, @RequestBody Student student){
+    Student updatedStudent = studentService.updateStudent(registrationId,student);
+    if(updatedStudent == null){
+      return ResponseEntity.notFound().build();
+    }
+    return  new  ResponseEntity<>(updatedStudent,HttpStatus.OK);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<Student> getStudentByIdHandler(@PathVariable("id") Long id) {
-    Student student = studentService.getById(id);
-    return new ResponseEntity<>(student, HttpStatus.OK);
+  @DeleteMapping("/{registrationId}")
+  public ResponseEntity<String> deleteStudent(@PathVariable Long registrationId){
+    try{
+      studentService.deleteStudent(registrationId);
+      return  new  ResponseEntity<>("Student Deleted successfully ",HttpStatus.OK);
+    }catch (Exception e){
+      throw new NotFoundException("No such Student found with id: " + registrationId);
+    }
+
   }
 
-  @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-  public ResponseEntity<Student> updateStudentHandler(
-          @PathVariable("id") Long id,
-          @RequestBody Student student) {
-    Student updatedStudent = studentService.updateStudent(id, student);
-    return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
+  @PostMapping("/{registrationId}/enroll/{subjectId}")
+  public ResponseEntity<String> enrollStudentInSubject(@PathVariable Long registrationId, @PathVariable Long subjectId){
+    studentService.enrollStudentInSubject(registrationId, subjectId);
+    return new  ResponseEntity<>("Student enroll successfully ",HttpStatus.OK);
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteStudentHandler(@PathVariable("id") Long id) {
-    studentService.deleteStudent(id);
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-  }
-
-  @PostMapping(value = "/{studentId}/enroll/{subjectId}", produces = "application/json")
-  public ResponseEntity<String> enrollStudentToSubjectHandler(
-          @PathVariable("studentId") Long studentId,
-          @PathVariable("subjectId") Long subjectId) {
-    studentService.enrollStudentToSubject(studentId, subjectId);
-    return ResponseEntity.ok("Student enrolled to subject successfully.");
-  }
-
-  @PostMapping(value = "/{studentId}/register/{examId}", produces = "application/json")
-  public ResponseEntity<String> registerStudentForExamHandler(
-          @PathVariable("studentId") Long studentId,
-          @PathVariable("examId") Long examId) {
-    studentService.registerStudentForExam(studentId, examId);
-    return ResponseEntity.ok("Student registered for exam successfully.");
+  @PostMapping("/{registrationId}/register/{examId}")
+  public ResponseEntity<String> registerStudentForExam(@PathVariable Long registrationId, @PathVariable Long examId){
+    try {
+      studentService.registerStudentForExam(registrationId, examId);
+      return new  ResponseEntity<>("Student Register successfully ",HttpStatus.OK);
+    }catch(Exception e){
+      throw new NotFoundException("Student is not enrolled in Subject for Exam: " + examId);
+    }
   }
 
   @GetMapping("/test")

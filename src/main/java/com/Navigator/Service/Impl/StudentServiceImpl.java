@@ -22,11 +22,13 @@ public class StudentServiceImpl implements IStudentService {
 
     @Autowired
     private StudentRepository studentRepository;
-
+  @Autowired
+  private  ExamRepository examRepository;
     @Override
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
+
 
     @Override
     public Student getStudentByRegistrationId(Long registrationId) {
@@ -44,7 +46,7 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     @Override
-    public Student updateStudent(int registrationId, Student updatedStudent) {
+    public Student updateStudent(Long registrationId, Student updatedStudent) {
         Student existingStudent = studentRepository.findByRegistrationId(registrationId);
         if(existingStudent != null){
             updatedStudent.setRegistrationId(existingStudent.getRegistrationId());
@@ -54,7 +56,7 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     @Override
-    public void deleteStudent(int registrationId) {
+    public void deleteStudent(Long registrationId) {
         try{
             Student student = studentRepository.findByRegistrationId(registrationId);
             studentRepository.delete(student);
@@ -64,7 +66,7 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     @Override
-    public void enrollStudentInSubject(int registrationId, int subjectId) {
+    public void enrollStudentInSubject(Long registrationId, Long subjectId) {
         Student student = studentRepository.findByRegistrationId(registrationId);
         if(student != null){
             Subject subject = new Subject();
@@ -77,15 +79,18 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     @Override
-    public void registerStudentForExam(int registrationId, int examId) {
-        Student student = studentRepository.findByRegistrationId(registrationId);
-        if(student != null){
-            Exam exam = new Exam();
-            exam.setExamId(examId);
+    public void registerStudentForExam(Long registrationId, Long examId) {
+        Student student = getStudentByRegistrationId(registrationId);
+        Exam exam = examRepository.findById(examId)
+                .orElseThrow(() -> new NotFoundException("Exam not found with ID: " + examId));
+
+        if (!student.getEnrolledSubjects().contains(exam.getSubject())) {
+            throw new IllegalStateException("Student must be enrolled in the subject before registering for the exam.");
+        }
+
+        if (!student.getRegisteredExams().contains(exam)) {
             student.getRegisteredExams().add(exam);
             studentRepository.save(student);
-        }else{
-            throw new NotFoundException("Student not found with ID: " + registrationId);
         }
     }
 }

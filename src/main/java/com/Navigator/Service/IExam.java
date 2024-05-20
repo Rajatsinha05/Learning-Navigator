@@ -8,11 +8,11 @@ import java.util.List;
 public interface IExam {
     List<Exam> getAllExams();
 
-    Exam getExamById(int examId);
+    Exam getExamById(Long examId);
 
     Exam createExam(Exam exam);
 
-    void deleteExam(int examId);
+    void deleteExam(Long examId);
 
-    void registerStudentForExam(int examId, int registrationId);
+    void registerStudentForExam(Long examId, Long registrationId);
 }

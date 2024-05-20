@@ -1,49 +1,58 @@
 package com.Navigator.Controllers;
 
+import com.Navigator.Exceptions.NotFoundException;
 import com.Navigator.Models.Subject;
+
 import com.Navigator.Service.Impl.SubjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/subjects")
 public class SubjectController {
 
+    private static final Logger logger = LoggerFactory.getLogger(SubjectController.class);
     @Autowired
-    private SubjectServiceImpl subjectService;
+    private  SubjectServiceImpl subjectService;
 
-    @PostMapping()
-    public ResponseEntity<Subject> createSubject(@RequestBody Subject subject) {
-        Subject createdSubject = subjectService.createSubject(subject);
-        return new ResponseEntity<>(createdSubject, HttpStatus.CREATED);
+    @GetMapping
+    public ResponseEntity<List<Subject>> getAllSubjects() {
+        List<Subject> subjects = subjectService.getAllSubjects();
+        if (subjects.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(subjects);
     }
 
-    @GetMapping()
-    public ResponseEntity<List<Subject>> getSubjects() {
-        List<Subject> subjects = subjectService.getSubjectList();
-        return new ResponseEntity<>(subjects, HttpStatus.OK);
+    @GetMapping("/{subjectId}")
+    public ResponseEntity<Subject> getSubjectById(@PathVariable Long subjectId) {
+        Subject subject = subjectService.getSubjectById(subjectId);
+        if (subject == null) {
+            throw new NotFoundException("Subject with ID: " + subjectId + " not found!");
+        }
+        return ResponseEntity.ok(subject);
+    }
+
+    @PostMapping
+    public ResponseEntity<Subject> createSubject(@RequestBody Subject subject) {
+        Subject createdSubject = subjectService.createSubject(subject);
+        return ResponseEntity.status(201).body(createdSubject);
     }
 
     @DeleteMapping("/{subjectId}")
-    public ResponseEntity<Void> deleteSubject(@PathVariable("subjectId") Long subjectId) {
-        subjectService.deleteSubjectById(subjectId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<String> deleteSubject(@PathVariable Long subjectId) {
+        Subject subject = subjectService.getSubjectById(subjectId);
+        if (subject == null) {
+            throw new NotFoundException("Subject with ID: " + subjectId + " not found!");
+        }
+        subjectService.deleteSubject(subjectId);
+        return ResponseEntity.status(200).body("Subject with ID: " + subjectId + " deleted successfully.");
     }
 
-    @PostMapping("/{subjectId}/enroll/{studentId}")
-    public ResponseEntity<String> enrollStudentInSubject(
-            @PathVariable("subjectId") Long subjectId,
-            @PathVariable("studentId") Long studentId) {
-        subjectService.enrollSubjectForStudent(subjectId, studentId);
-        return ResponseEntity.ok("Student enrolled in subject successfully.");
-    }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
-        return ResponseEntity.ok("working");
-    }
 }

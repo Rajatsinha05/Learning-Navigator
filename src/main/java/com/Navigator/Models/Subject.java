@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @Entity
 @NoArgsConstructor
@@ -16,7 +13,7 @@ public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, name = "SubjectID")
-    private int subjectId;
+    private Long subjectId;
 
     @Column(name = "Name")
     private String name;

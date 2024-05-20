@@ -19,10 +19,10 @@ public class Exam {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, name = "ExamID")
-    private int examId;
+    private Long examId;
 
     @Column(name = "Subject")
-    private int subject;
+    private Long subject;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "registeredExams")
