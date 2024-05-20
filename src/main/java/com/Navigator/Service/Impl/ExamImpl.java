@@ -56,20 +56,34 @@ public class ExamImpl implements IExam {
   }
 
   @Override
+
   public void registerStudentForExam(Long examId, Long registrationId) {
     Exam exam = getExamById(examId);
     Student student = studentService.getStudentByRegistrationId(registrationId);
-    if(student != null && exam != null){
-      for(Subject subject:student.getEnrolledSubjects()){
-        if(subject.getSubjectId() == exam.getSubject()){
-          exam.getRegisteredStudents().add(student);
-          examRepository.save(exam);
-        }else{
-          throw new NotFoundException("Student is not enrolled in Subject ID: " + exam.getSubject());
-        }
-      }
-    }else{
+
+    if (student == null) {
       throw new NotFoundException("Student not found with Registration ID: " + registrationId);
     }
+
+    if (exam == null) {
+      throw new NotFoundException("Exam not found with ID: " + examId);
+    }
+
+    boolean enrolledInSubject = false;
+
+    for (Subject subject : student.getEnrolledSubjects()) {
+      if (subject.getSubjectId().equals(exam.getSubject().getSubjectId())) {
+        exam.getRegisteredStudents().add(student);
+        enrolledInSubject = true;
+        break; // No need to check other subjects
+      }
+    }
+
+    if (!enrolledInSubject) {
+      throw new NotFoundException("Student is not enrolled in Subject ID: " + exam.getSubject().getSubjectId());
+    }
+
+    examRepository.save(exam);
   }
+
 }

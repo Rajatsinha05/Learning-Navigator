@@ -21,8 +21,10 @@ public class Exam {
     @Column(unique = true, name = "ExamID")
     private Long examId;
 
-    @Column(name = "Subject")
-    private Long subject;
+    @ManyToOne
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+
 
     @JsonIgnore
     @ManyToMany(mappedBy = "registeredExams")
