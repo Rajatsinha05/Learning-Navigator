@@ -3,83 +3,89 @@ package com.Navigator.Service.Impl;
 import com.Navigator.Exceptions.NotFoundException;
 import com.Navigator.Exceptions.BadRequestException;
 import com.Navigator.Models.Exam;
-import com.Navigator.Models.Students;
+import com.Navigator.Models.Student;
 import com.Navigator.Models.Subject;
 import com.Navigator.Repository.ExamRepository;
 import com.Navigator.Repository.StudentRepository;
 import com.Navigator.Repository.SubjectRepository;
 import com.Navigator.Service.IStudentService;
-import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
+@Transactional
 public class StudentServiceImpl implements IStudentService {
 
     @Autowired
     private StudentRepository studentRepository;
-    @Autowired
-    private ExamRepository examRepository;
-    @Autowired
-    private SubjectRepository subjectRepository;
 
     @Override
-    public Students createStudent(Students students) {
-        return studentRepository.save(students);
-    }
-
-    @Override
-    public List<Students> getStudentList() {
+    public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
 
     @Override
-    public String deleteStudent(Long id) {
-        if (!studentRepository.existsById(id)) {
-            throw new NotFoundException("Student not found with id: " + id);
+    public Student getStudentByRegistrationId(Long registrationId) {
+        try{
+            return studentRepository.findByRegistrationId(registrationId);
+        }catch(NotFoundException e){
+            System.out.println("Student not found with ID: " + registrationId);
         }
-        studentRepository.deleteById(id);
-        return "Student deleted";
+        return null;
     }
 
     @Override
-    public Students getById(Long id) {
-        return studentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Student not found with id: " + id));
-    }
-
-    @Override
-    public Students updateStudent(Long id, Students studentDetails) {
-        Students student = studentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Student not found with id: " + id));
-        student.setName(studentDetails.getName());
-        student.setSubjects(studentDetails.getSubjects());
-        student.setExams(studentDetails.getExams());
-
+    public Student createStudent(Student student) {
         return studentRepository.save(student);
     }
 
     @Override
-    public void enrollStudentToSubject(Long studentId, Long subjectId) {
-        Students student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new NotFoundException("Student not found with id: " + studentId));
-
-        Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new NotFoundException("Subject not found with id: " + subjectId));
-
-        student.getSubjects().add(subject);
-        studentRepository.save(student);
+    public Student updateStudent(int registrationId, Student updatedStudent) {
+        Student existingStudent = studentRepository.findByRegistrationId(registrationId);
+        if(existingStudent != null){
+            updatedStudent.setRegistrationId(existingStudent.getRegistrationId());
+            return studentRepository.save(updatedStudent);
+        }
+        return null;
     }
 
     @Override
-    public void registerStudentForExam(Long studentId, Long examId) {
-        Students student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new NotFoundException("Student not found with id: " + studentId));
+    public void deleteStudent(int registrationId) {
+        try{
+            Student student = studentRepository.findByRegistrationId(registrationId);
+            studentRepository.delete(student);
+        }catch(Exception e){
+            throw new NotFoundException("No such Student found with id: " + registrationId);
+        }
+    }
 
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new NotFoundException("Exam not found with id: " + examId));
+    @Override
+    public void enrollStudentInSubject(int registrationId, int subjectId) {
+        Student student = studentRepository.findByRegistrationId(registrationId);
+        if(student != null){
+            Subject subject = new Subject();
+            subject.setSubjectId(subjectId);
+            student.getEnrolledSubjects().add(subject);
+            studentRepository.save(student);
+        }else{
+            throw new NotFoundException("Student not found with ID: " + registrationId);
+        }
+    }
 
-        student.getExams().add(exam);
-        studentRepository.save(student);
+    @Override
+    public void registerStudentForExam(int registrationId, int examId) {
+        Student student = studentRepository.findByRegistrationId(registrationId);
+        if(student != null){
+            Exam exam = new Exam();
+            exam.setExamId(examId);
+            student.getRegisteredExams().add(exam);
+            studentRepository.save(student);
+        }else{
+            throw new NotFoundException("Student not found with ID: " + registrationId);
+        }
     }
 }

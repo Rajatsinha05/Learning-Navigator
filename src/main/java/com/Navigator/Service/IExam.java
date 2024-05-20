@@ -1,15 +1,18 @@
 package com.Navigator.Service;
 
 import com.Navigator.Models.Exam;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public interface IExam {
+    List<Exam> getAllExams();
+
+    Exam getExamById(int examId);
+
     Exam createExam(Exam exam);
 
-    Exam getExamById(long id);
+    void deleteExam(int examId);
 
-    List<Exam> getExamList();
-
-    Exam deleteById(Long id);
+    void registerStudentForExam(int examId, int registrationId);
 }

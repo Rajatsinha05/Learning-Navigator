@@ -1,6 +1,5 @@
 package com.Navigator.Models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,10 +15,10 @@ import java.util.List;
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long subjectId;
+    @Column(unique = true, name = "SubjectID")
+    private int subjectId;
+
+    @Column(name = "Name")
     private String name;
 
-    @ManyToMany(mappedBy = "subjects")
-
-    private List<Students> students= new ArrayList<>();
 }
