@@ -1,10 +1,15 @@
-# Use a base image with Java
-FROM eclipse-temurin:21-jre-jammy
+# Use a base image with Java runtime
+FROM eclipse-temurin:17-jre-jammy
 
-# Set the working directory in the container
-WORKDIR /ap
-# Copy the jar file from the project directory
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the JAR file into the container
 COPY ./build/libs/Navigator-0.0.1-SNAPSHOT.jar ./app.jar
+
+# Expose the port the application runs on
 EXPOSE 8090
+
 # Command to run the application
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "./app.jar"]
