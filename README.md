@@ -1,7 +1,6 @@
 
 
 ---
-
 # Learning Management System (LMS) API
 
 Welcome to the Learning Management System (LMS) API! This API empowers educational institutions to efficiently manage exams, subjects, and students. With its intuitive endpoints and powerful features, educators can focus on delivering exceptional learning experiences.
